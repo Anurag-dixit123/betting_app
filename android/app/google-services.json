@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "735693786754",
+    "project_id": "betting-app-fa6a1",
+    "storage_bucket": "betting-app-fa6a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735693786754:android:a55d1fe493e8e86dc66e9b",
+        "android_client_info": {
+          "package_name": "com.example.betting_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9GUezjFyj57UXoKDw29caOYHxgaglOYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
