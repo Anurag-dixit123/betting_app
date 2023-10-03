@@ -380,6 +380,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
+  TextEditingController mobileNumberController = TextEditingController();
   String mobileNumber = '';
   final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -390,10 +391,20 @@ class _LoginPageState extends State<LoginPage> {
     loadMobileNumber();
   }
 
+  String hideLastFourDigits(String phoneNumber) {
+    if (phoneNumber.length >= 4) {
+      final visibleDigits = phoneNumber.substring(0, phoneNumber.length - 4);
+      final hiddenDigits = '*' * 4;
+      return visibleDigits + hiddenDigits;
+    } else {
+      return phoneNumber; // Return the original number if it's less than 4 digits
+    }
+  }
   void loadMobileNumber() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       mobileNumber = prefs.getString('mobileNumber') ?? '';
+      mobileNumberController.text = mobileNumber; // Set the text of the controller
       print('Mobile Number loaded from SharedPreferences: $mobileNumber');
     });
   }
@@ -462,7 +473,33 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Mobile Number: $mobileNumber'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    // color: Colors.cyan[200], // Replace with your desired background color
+                    borderRadius: BorderRadius.circular(13.0), // Replace with your desired border radius
+                  ),
+                  padding: EdgeInsets.all(20.0), // Replace with your desired padding
+                  child: Column(
+                    children: [
+                      Text('Your Verified Mobile Number :', style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black ),),
+                      Center(
+                        child: Text(
+                          '${hideLastFourDigits(mobileNumber)}',
+                          style: TextStyle(
+                            fontSize: 16.0, // Replace with your desired font size
+                            color: Colors.black, // Replace with your desired text color
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextFormField(

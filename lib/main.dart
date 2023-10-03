@@ -1,4 +1,6 @@
 import 'package:betting_app/password_screen.dart';
+import 'package:betting_app/payment_history.dart';
+import 'package:betting_app/topup_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:betting_app/phone.dart';
@@ -7,6 +9,8 @@ import 'package:betting_app/app_homescreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:betting_app/login_screen.dart';
 import 'package:betting_app/gaming_ui.dart';
+import 'package:betting_app/topup_screen.dart';
+import 'package:betting_app/payment_history.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +25,8 @@ void main() async {
       'login': (context) => LoginPage(),
       'app': (context) => HomePage(),
       'game': (context) => CalendarButtons(),
+      'topup': (context) => AddMoneyScreen(),
+      'transaction': (context) => Payment(),
     },
   )
   );

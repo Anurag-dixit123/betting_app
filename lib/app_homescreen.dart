@@ -139,15 +139,14 @@ class _HomePageState extends State<HomePage> {
                           height: 110,
                           width: 90,
                           child: Icon(
-                            Icons.attach_money,
-                            size: 90,
+                            Icons.currency_rupee,
+                            size: 80,
                             color: Colors.white,
                           ),
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-
 
                             Text(
                               'ACCOUNT BALANCE',
@@ -158,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "\$",
+                                  "\₹",
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 230, 190, 16),
                                     fontSize: 30,
@@ -188,7 +187,9 @@ class _HomePageState extends State<HomePage> {
                       color: Color.fromARGB(255, 230, 190, 16),
                       shape: RoundedRectangleBorder(side: BorderSide(width: 2)),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'topup');
+                        },
                         child: Text(
                           'REQUEST PAYMENT',
                           style: TextStyle(color: Colors.black, fontSize: 16),
@@ -227,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "\$",
+                                  "\₹",
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 230, 190, 16),
                                     fontSize: 30,
@@ -235,7 +236,6 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Text(
                                   "5.00",
-
                                   style: TextStyle(
                                       color: Color.fromARGB(255, 230, 190, 16),
                                       fontSize: 30,
@@ -258,7 +258,9 @@ class _HomePageState extends State<HomePage> {
                       color: Color.fromARGB(255, 230, 190, 16),
                       shape: RoundedRectangleBorder(side: BorderSide(width: 2)),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // Navigator.pushNamed(context, 'transaction');
+                        },
                         child: Text(
                           'MAKE A DEPOSIT',
                           style: TextStyle(color: Colors.black, fontSize: 20),
@@ -297,7 +299,7 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "\$",
+                                  "\₹",
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 230, 190, 16),
                                     fontSize: 30,
@@ -330,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Last Deposit:'),
-                              Text('\$50.00'),
+                              Text('\₹50.00'),
                             ],
                           ),
                         ),
@@ -343,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                                 'Total Deposit:',
                               ),
                               Text(
-                                '\$50.00',
+                                '\₹50.00',
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.black,
@@ -386,7 +388,7 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "\$",
+                                  "\₹",
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 230, 190, 16),
                                     fontSize: 30,
@@ -419,7 +421,7 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Last Withdrawal:'),
-                              Text('\$5.00'),
+                              Text('\₹5.00'),
                             ],
                           ),
                         ),
@@ -432,7 +434,7 @@ class _HomePageState extends State<HomePage> {
                                 'Pending Withdrawal:',
                               ),
                               Text(
-                                '\$00.00',
+                                '\₹00.00',
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.black,
@@ -569,7 +571,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   onTap: () {
                     changeSelected(3);
-                    // Navigator.pop(context);
+                    Navigator.pushNamed(context, 'transaction');
                   },
                 ),
               ),
