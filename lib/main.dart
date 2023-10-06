@@ -1,3 +1,4 @@
+import 'package:betting_app/gaming_history.dart';
 import 'package:betting_app/password_screen.dart';
 import 'package:betting_app/payment_history.dart';
 import 'package:betting_app/topup_screen.dart';
@@ -35,6 +36,7 @@ void main() async {
       'history': (context) => WithdrawalHistory(),
       'bankdetails': (context) => BankDetails(),
       'referral': (context) => ReferralScreen(),
+      'gamehistory': (context) => GameHistory(),
 
 
     },
