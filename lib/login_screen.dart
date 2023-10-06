@@ -362,7 +362,7 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Crtpx")),
+        title: Center(child: Text("Cripx")),
       ),
       body: Padding(
         padding: EdgeInsets.all(20.0),
@@ -376,7 +376,7 @@ class AuthScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 38.0),
                 child: Center(
                     child: Text(
-                      'Welcome To Crtpx',
+                      'Welcome To Cripx',
                       style: TextStyle(fontSize: 30),
                     )),
               ),

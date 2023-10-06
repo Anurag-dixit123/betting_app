@@ -11,6 +11,10 @@ import 'package:betting_app/login_screen.dart';
 import 'package:betting_app/gaming_ui.dart';
 import 'package:betting_app/topup_screen.dart';
 import 'package:betting_app/payment_history.dart';
+import 'package:betting_app/withdrawal_screen.dart';
+import 'package:betting_app/withdrawal_history.dart';
+import 'package:betting_app/bank_details.dart';
+import 'package:betting_app/referral_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +31,12 @@ void main() async {
       'game': (context) => CalendarButtons(),
       'topup': (context) => AddMoneyScreen(),
       'transaction': (context) => Payment(),
+      'withdraw': (context) => WithdrawMoneyScreen(),
+      'history': (context) => WithdrawalHistory(),
+      'bankdetails': (context) => BankDetails(),
+      'referral': (context) => ReferralScreen(),
+
+
     },
   )
   );
