@@ -37,8 +37,6 @@ void main() async {
       'bankdetails': (context) => BankDetails(),
       'referral': (context) => ReferralScreen(),
       'gamehistory': (context) => GameHistory(),
-
-
     },
   )
   );

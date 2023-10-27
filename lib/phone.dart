@@ -525,11 +525,11 @@ class _MyPhoneState extends State<MyPhone> {
                       if (_formKey.currentState!.validate()) {
                         // Form is valid, proceed with sending the code
 
-                        await saveMobileNumber('${countryController.text + phone}');
-
+                        // await saveMobileNumber('${countryController.text + phone}');
+                        await saveMobileNumber(phone);
 
                         // Call the login function to make the API request
-                        login(context); // Add this line to call the login function
+                        PhoneApi(context); // Add this line to call the login function
 
                         await FirebaseAuth.instance.verifyPhoneNumber(
                           phoneNumber: '${countryController.text + phone}',
@@ -556,7 +556,7 @@ class _MyPhoneState extends State<MyPhone> {
 }
 
 // API Validation
-void login(BuildContext context) async {
+void PhoneApi(BuildContext context) async {
   if (MyPhone.mobileNumberController.text.isNotEmpty) {
     print('Sending login request...');
 

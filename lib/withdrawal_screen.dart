@@ -322,6 +322,7 @@ class WithdrawMoneyScreen extends StatelessWidget {
             icon: Icon(Icons.history),
             onPressed: () {
               // Handle "Recharge History" button press here
+              Navigator.pushNamed(context, 'history');
             },
           ),
         ],

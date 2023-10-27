@@ -38,22 +38,22 @@ class _CalendarButtonsState extends State<CalendarButtons> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text('Game Center')),
-        backgroundColor: Color(0xFF030470),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.history), // You can change this icon to your desired one
-            onPressed: () {
-              // Add your logic here for the icon's action
-              // For example, you can open a drawer or perform some other action.
-
-              print('Icon button pressed');
-              Navigator.pushNamed(context, 'gamehistory');
-            },
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Center(child: Text('Game Center')),
+      //   backgroundColor: Color(0xFF030470),
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(Icons.history), // You can change this icon to your desired one
+      //       onPressed: () {
+      //         // Add your logic here for the icon's action
+      //         // For example, you can open a drawer or perform some other action.
+      //
+      //         print('Icon button pressed');
+      //         Navigator.pushNamed(context, 'gamehistory');
+      //       },
+      //     ),
+      //   ],
+      // ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
