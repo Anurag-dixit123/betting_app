@@ -1,7 +1,7 @@
-import 'package:betting_app/bank_details.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:betting_app/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:betting_app/gaming_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -26,6 +26,72 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   List<bool> buttonStates = List.generate(12, (index) => false);
+
+  String? username = '';
+  String? registrationDate = '';
+  String? lastAccess = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Make the API call when the screen is loaded
+    BankDetailsUpdateApi(context);
+  }
+
+
+  // 1st API Validation
+  void BankDetailsUpdateApi(BuildContext context) async {
+
+      print('Sending Data To Api...');
+      // Move the code to retrieve token and user ID here
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+      String? token = prefs.getString('login');
+
+      if (token != null && userId != null) {
+        var response = await http.post(
+          Uri.parse('https://cripx.provisioningtech.com/post_ajax/get_profile'),
+          headers: {
+            'Client-Service': 'frontend-client',
+            'Auth-Key': 'simplerestapi',
+            'Authorization': token, // Use the retrieved token
+            'type': '2',
+            'User-ID': userId, // Use the retrieved user ID
+          },
+          body: {
+            'loginid': userId,
+          },
+        );
+
+        print('API Request 1 - Response status code: ${response.statusCode}'); // Added print statement
+        print('Response status code: ${response.statusCode}');
+        print('Response body: ${response.body}'); // Print the response status code and body
+
+        if (response.statusCode == 200) {
+          final body = jsonDecode(response.body);
+          final detail = body['detail'][0];
+           username = detail['BRANCH_USERNAME'];
+           registrationDate = detail['BRANCH_TT'].substring(0, 10); // Extract the date part
+           lastAccess = detail['BRANCH_TT'].substring(11); // Extract the time part
+          // Now you can print or use these variables as needed
+          print('Username: $username');
+          print('Registration Date: $registrationDate');
+          print('Last Access: $lastAccess');
+          // Extract relevant data from the response
+          setState(() {
+            username = detail['BRANCH_USERNAME'];
+            registrationDate = detail['BRANCH_TT'].substring(0, 10);
+            lastAccess = detail['BRANCH_TT'].substring(11);
+          });
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Invalid Credentials')));
+        }
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Token or User ID missing')));
+      }
+    }
 
   void toggleButtonState(int index) {
     setState(() {
@@ -118,7 +184,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 Container(
-                  height: 90,
+                  height: 114,
                   width: double.infinity,
                   child: Card(
                     shadowColor: Colors.black,
@@ -128,58 +194,83 @@ class _HomePageState extends State<HomePage> {
                         width: 2,
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.account_circle,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8.0, right: 8.0, left: 8.0),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.account_circle,
+                                  ),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(
+                                    'USERNAME:', style: TextStyle(fontSize: 11, color: Colors.black),
+                                  ),
+                                  SizedBox(width: 170,),
+                                  Text(username!,style: TextStyle(fontSize: 10, color: Colors.black),),
+
+                                ],
                               ),
-                              SizedBox(
-                                width: 2,
-                              ),
-                              Text(
-                                'USERNAME:',
-                                style:
-                                    TextStyle(fontSize: 10, color: Colors.black),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.edit,
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8.0, right: 8.0, left: 8.0),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.edit,
+                                  ),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(
+                                    'REGISTRATION DATE:',
+                                    style:
+                                        TextStyle(fontSize: 11, color: Colors.black),
+                                  ),
+                                  SizedBox(width: 125,),
+                                  Text(registrationDate!,style: TextStyle(fontSize: 11, color: Colors.black),),
+                                      ],
                               ),
-                              SizedBox(
-                                width: 2,
-                              ),
-                              Text(
-                                'REGISTRATION DATE:',
-                                style:
-                                    TextStyle(fontSize: 10, color: Colors.black),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.mobile_friendly,
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8.0, right: 8.0, left: 8.0),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.mobile_friendly,
+                                  ),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'LAST ACCESS:',
+                                        style:
+                                            TextStyle(fontSize: 11, color: Colors.black),
+                                      ),
+                                      SizedBox(width: 160,),
+                                      Text(lastAccess!,style: TextStyle(fontSize: 12, color: Colors.black),),
+                                    ],
+                                  ),
+
+                                     ],
                               ),
-                              Text(
-                                'LAST ACCESS:',
-                                style:
-                                    TextStyle(fontSize: 10, color: Colors.black),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -732,7 +823,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 _buildDrawerItem(
                   icon: Icons.share_outlined,
-                  text: "REFERRAl",
+                  text: "REFFERAl",
                   selectedIndex: _selectedIndex,
                   itemIndex: 6,
                   onTap: () {

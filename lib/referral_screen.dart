@@ -50,7 +50,7 @@ class ReferralScreen extends StatelessWidget {
                     // Implement your invite logic here
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.pink, // Pink invite button color
+                    backgroundColor: Colors.pink, // Pink invite button color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     )

@@ -179,6 +179,15 @@ class _LoginPageState extends State<LoginPage> {
       print('Mobile Number loaded from SharedPreferences: $mobileNumber');
     });
   }
+  Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('login', token);
+  }
+
+  Future<void> saveUserId(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userId', userId);
+  }
 
   bool isAlphanumeric(String value) {
     final alphanumericRegex = RegExp(r'^(?=.*[a-zA-Z])(?=.*[0-9])');
@@ -214,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
       } catch (e) {
         print('Login failed with exception: $e');
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('An error occurred')));
+            .showSnackBar(SnackBar(content: Text('Already Registered')));
       }
     }
   }
@@ -238,6 +247,9 @@ class _LoginPageState extends State<LoginPage> {
         });
 
     if (response.statusCode == 200) {
+      final body = jsonDecode(response.body);
+      saveToken(body['token']);
+      saveUserId(body['id']);
       return response;
     } else {
       print('Login failed with status code ${response.statusCode}');
