@@ -1,290 +1,6 @@
-// import 'package:flutter/material.dart';
-//
-// void main() => runApp(MyApp());
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: AddMoneyScreen(),
-//     );
-//   }
-// }
-//
-// class AddMoneyScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Add Money'),
-//       ),
-//       body: Stack(
-//         children: <Widget>[
-//           // Background Image
-//           Container(
-//             decoration: BoxDecoration(
-//               image: DecorationImage(
-//                 image: AssetImage('assets/images/addmoney.png'),
-//                 fit: BoxFit.fill,
-//               ),
-//             ),
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: <Widget>[
-//                 Text(
-//                   'Current Balance: \$100.00',
-//                   style: TextStyle(fontSize: 18, color: Colors.white),
-//                 ),
-//                 SizedBox(height: 20),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                   children: <Widget>[
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         // Add $10
-//                         // Implement the logic to add $10 here
-//                       },
-//                       style: ElevatedButton.styleFrom(primary: Colors.green),
-//                       child: Text('\$10', style: TextStyle(fontSize: 18)),
-//                     ),
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         // Add $20
-//                         // Implement the logic to add $20 here
-//                       },
-//                       style: ElevatedButton.styleFrom(primary: Colors.blue),
-//                       child: Text('\$20', style: TextStyle(fontSize: 18)),
-//                     ),
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         // Add $30
-//                         // Implement the logic to add $30 here
-//                       },
-//                       style: ElevatedButton.styleFrom(primary: Colors.orange),
-//                       child: Text('\$30', style: TextStyle(fontSize: 18)),
-//                     ),
-//                   ],
-//                 ),
-//                 SizedBox(height: 20),
-//                 TextFormField(
-//                   keyboardType: TextInputType.number,
-//                   decoration: InputDecoration(
-//                     labelText: 'Enter Amount to Add',
-//                     prefixText: '\$',
-//                   ),
-//                 ),
-//                 SizedBox(height: 20),
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     // Custom amount input
-//                     // Implement the logic to add the custom amount here
-//                   },
-//                   style: ElevatedButton.styleFrom(primary: Colors.red),
-//                   child: Text('Add Custom Amount', style: TextStyle(fontSize: 18)),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-//
-// import 'package:flutter/material.dart';
-//
-// void main() => runApp(MyApp());
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: AddMoneyScreen(),
-//     );
-//   }
-// }
-//
-// class AddMoneyScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Center(child: Text('Recharge', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),)),
-//         backgroundColor: Color(0xFF030433), // Set the app bar background color
-//         leading: IconButton(
-//           icon: Icon(Icons.arrow_back),
-//           onPressed: () {
-//             // Handle back button press here
-//           },
-//         ),
-//         actions: [
-//           IconButton(
-//             icon: Icon(Icons.history),
-//             onPressed: () {
-//               // Handle "Recharge History" button press here
-//             },
-//           ),
-//         ],
-//       ),
-//       body: Container(
-//         height: double.infinity,
-//         width: double.infinity,
-//         color: Color(0xFF030433),
-//         child: SingleChildScrollView(
-//           child: Padding(
-//             padding: const EdgeInsets.only(top: 22, right: 12, left: 12),
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: <Widget>[
-//                 // Blue Container with Current Balance
-//                 Container(
-//                   width: double.infinity,
-//                   padding: EdgeInsets.all(16.0),
-//                   decoration: BoxDecoration(
-//                     color: Colors.blue,
-//                     borderRadius: BorderRadius.circular(10.0),
-//                   ),
-//                   child: Column(
-//                     children: [
-//                       Row(
-//                         crossAxisAlignment: CrossAxisAlignment.start,
-//                         children: <Widget>[
-//                           // Text(
-//                           //   'Current Balance',
-//                           //   style: TextStyle(
-//                           //     color: Colors.white,
-//                           //     fontSize: 20.0,
-//                           //   ),
-//                           // ),
-//                           // SizedBox(width: 20,),
-//                           Text(
-//                             ' ₹',
-//                             style: TextStyle(
-//                               color: Colors.white,
-//                               fontSize: 30.0,
-//                             ),
-//                           ),
-//                           Text(
-//                             ' 100.00',
-//                             style: TextStyle(
-//                               color: Colors.white,
-//                               fontSize: 45.0,
-//                               // fontWeight: FontWeight.bold,
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                       SizedBox(height: 10),
-//                       // Text below the blue container
-//                       Column(
-//                         children: [
-//                           Padding(
-//                             padding: const EdgeInsets.only(right: 45.0),
-//                             child: Text(
-//                               'Your balance is being protected at bank level so invest with confidence',
-//                               style:
-//                                   TextStyle(fontSize: 16.0, color: Colors.white),
-//                               textAlign: TextAlign.center,
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//
-//                 SizedBox(height: 20),
-//                 // Text "Recharge Amount"
-//                 Padding(
-//                   padding: const EdgeInsets.only(right: 230),
-//                   child: Text(
-//                     'Recharge Amount',
-//                     style: TextStyle(
-//                         fontSize: 18.0,
-//                         fontWeight: FontWeight.bold,
-//                         color: Colors.white),
-//                   ),
-//                 ),
-//                 SizedBox(height: 20),
-//                 // Recharge Amount Buttons with three buttons per row
-//                 Column(
-//                   children: <Widget>[
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: <Widget>[
-//                         ElevatedButton(
-//                           onPressed: () {
-//                             // Handle $10 recharge
-//                           },
-//                           style: ElevatedButton.styleFrom(
-//                             backgroundColor: Color(0xFF030430),
-//                             minimumSize: Size(100, 50),
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(10)
-//                             ),
-//                             elevation: 3, // Adjust the elevation (shadow depth) as needed
-//                             shadowColor: Colors.white, // Adjust the shadow color as needed
-//                           ),
-//                           child: Text('  ₹ 10', style: TextStyle(fontSize: 18)),
-//                         ),
-//                         ElevatedButton(
-//                           onPressed: () {
-//                             // Handle $20 recharge
-//                           },
-//                           style: ElevatedButton.styleFrom(
-//                             backgroundColor: Colors.blue,
-//                             minimumSize: Size(100, 50),
-//                           ),
-//                           child: Text(' ₹ 20', style: TextStyle(fontSize: 18)),
-//                         ),
-//                         ElevatedButton(
-//                           onPressed: () {
-//                             // Handle $30 recharge
-//                           },
-//                           style: ElevatedButton.styleFrom(
-//                             backgroundColor: Colors.orange,
-//                             minimumSize: Size(100, 50),
-//                           ),
-//                           child: Text(' ₹ 30', style: TextStyle(fontSize: 18)),
-//                         ),
-//                       ],
-//                     ),
-//
-//                   ],
-//                 ),
-//                 SizedBox(
-//                   height: 30,
-//                 ),
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     // Handle recharge with a good luck message
-//                   },
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.pinkAccent,
-//                     minimumSize: Size(300, 60),
-//                   ),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     children: <Widget>[
-//                       Text('Recharge', style: TextStyle(fontSize: 22)),
-//                       SizedBox(width: 10),
-//                       Text('👍', style: TextStyle(fontSize: 24)),
-//                     ],
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -295,6 +11,49 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: WithdrawMoneyScreen(),
     );
+  }
+}
+
+Future<void> walletRequestApi2(BuildContext context) async { // Added 'BuildContext context'
+  // Move the code to retrieve token and user ID here
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? userId = prefs.getString('userId');
+  String? token = prefs.getString('login');
+
+  var headers = {
+    'Client-Service': 'frontend-client',
+    'Auth-Key': 'simplerestapi',
+    'Authorization': token!,
+    'type': '2',
+    'User-ID': userId!,
+  };
+  var request = http.MultipartRequest(
+      'POST', Uri.parse('https://cripx.provisioningtech.com/post_ajax/wallet_request'));
+  request.fields.addAll({
+    'amount': '100',
+    'deposit_url': 'sdddtdedyetdgyudg',
+    'deposit_network': 'kshdjhdhduud',
+    'deposit_to': 'duhyudiyudydwiudy',
+    'deposit_status': '1',
+    'loginid': userId,
+  });
+
+  request.headers.addAll(headers);
+  http.StreamedResponse response = await request.send();
+  print('Wallet API Request - Response status code: ${response.statusCode}');
+  if (response.statusCode == 200) {
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+
+    // Now that you've consumed the stream, you can process the response
+    // Handle the successful response here
+    final data = jsonDecode(responseBody);
+    // Do something with the data
+    print('Response body: $responseBody');
+
+  } else {
+    print(response.reasonPhrase);
+    // Handle the error here
   }
 }
 
@@ -465,8 +224,11 @@ class WithdrawMoneyScreen extends StatelessWidget {
                       height: 60,
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         // Handle recharge with a good luck message
+                        // Call the walletRequestApi function from the parent widget
+                        await walletRequestApi2(context);
+
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.pinkAccent,

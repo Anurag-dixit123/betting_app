@@ -30,12 +30,27 @@ class _HomePageState extends State<HomePage> {
   String? username = '';
   String? registrationDate = '';
   String? lastAccess = '';
+  String? wbId = '';
+  String? wbTT = '';
+  String? wbLoginId = '';
+  String? wbAccountBalance = '';
+  String? wbEarnedTotal = '';
+  String? wbActiveDeposit = '';
+  String? wbTotalWithdrawal = '';
+  String? wbLastDeposit = '';
+  String? wbLastWithdrawal = '';
+  String rln = ''; // Initialize with an empty string
+
 
   @override
   void initState() {
     super.initState();
     // Make the API call when the screen is loaded
     BankDetailsUpdateApi(context);
+    // Call the second API function
+    WalletBalanceApi(context);
+    // Call the third API function
+    GetRoundApi(context);
   }
 
 
@@ -64,8 +79,8 @@ class _HomePageState extends State<HomePage> {
         );
 
         print('API Request 1 - Response status code: ${response.statusCode}'); // Added print statement
-        print('Response status code: ${response.statusCode}');
-        print('Response body: ${response.body}'); // Print the response status code and body
+        print('Response status code of 1st Api: ${response.statusCode}');
+        // print('Response body: ${response.body}'); // Print the response status code and body
 
         if (response.statusCode == 200) {
           final body = jsonDecode(response.body);
@@ -74,9 +89,9 @@ class _HomePageState extends State<HomePage> {
            registrationDate = detail['BRANCH_TT'].substring(0, 10); // Extract the date part
            lastAccess = detail['BRANCH_TT'].substring(11); // Extract the time part
           // Now you can print or use these variables as needed
-          print('Username: $username');
-          print('Registration Date: $registrationDate');
-          print('Last Access: $lastAccess');
+          // print('Username: $username');
+          // print('Registration Date: $registrationDate');
+          // print('Last Access: $lastAccess');
           // Extract relevant data from the response
           setState(() {
             username = detail['BRANCH_USERNAME'];
@@ -92,6 +107,118 @@ class _HomePageState extends State<HomePage> {
             .showSnackBar(SnackBar(content: Text('Token or User ID missing')));
       }
     }
+
+  void WalletBalanceApi(BuildContext context) async {
+    print('Sending Data To Wallet API...');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    String? token = prefs.getString('login');
+
+    print('Token for Wallet API: $token');
+
+    if (token != null && userId != null) {
+      var headers = {
+        'Client-Service': 'frontend-client',
+        'Auth-Key': 'simplerestapi',
+        'Authorization': token,
+        'type': '2',
+        'User-ID': userId,
+        'Cookie': 'ci_session=6b84f6a419a5b7f945dd03e33c301c4d6357e89d'
+      };
+
+      var request = http.MultipartRequest('POST', Uri.parse('https://cripx.provisioningtech.com/get_ajax/wallet_balance'));
+      request.fields.addAll({
+        'loginid': userId,
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      print('Wallet API Request - Response status code: ${response.statusCode}');
+
+
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        print('Response body: $responseBody');
+        // Process the response as needed
+        final data = jsonDecode(responseBody);
+        wbId = data['WB_ID'];
+        wbTT = data['WB_TT'];
+        wbLoginId = data['WB_LOGIN_ID'];
+        wbAccountBalance = data['WB_ACCOUNT_BALANCE'];
+        wbEarnedTotal = data['WB_EARNED_TOTAL'];
+        wbActiveDeposit = data['WB_ACTIVE_DEPOSIT'];
+        wbTotalWithdrawal = data['WB_TOTAL_WITH_DRAWL'];
+        wbLastDeposit = data['WB_LAST_DEPOSIT'];
+        wbLastWithdrawal = data['WB_LAST_WITHDRAWL'];
+
+        setState(() {
+          // Update the state to trigger a UI refresh with the new data.
+        });
+      } else {
+        print('Error: ${response.reasonPhrase}');
+        // Handle the error or take appropriate action as needed
+      }
+    } else {
+      print('Token or User ID missing');
+      // Handle the case when the token or user ID is missing
+    }
+  }
+
+
+  void GetRoundApi(BuildContext context) async {
+    print('Sending Data To Wallet API...');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    String? token = prefs.getString('login');
+
+    print('Token for Wallet API: $token');
+
+    if (token != null && userId != null) {
+      var headers = {
+        'Client-Service': 'frontend-client',
+        'Auth-Key': 'simplerestapi',
+        'Authorization': token,
+        'type': '2',
+        'User-ID': userId,
+        'Cookie': 'ci_session=6b84f6a419a5b7f945dd03e33c301c4d6357e89d'
+      };
+
+      var request = http.MultipartRequest('POST', Uri.parse(
+          'https://cripx.provisioningtech.com/get_ajax/get_round_list'));
+      request.fields.addAll({
+        'loginid': userId,
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      print('Get Round List API Request - Response status code: ${response
+          .statusCode}');
+
+
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        print('Response body: $responseBody');
+        // Process the response as needed
+        final data = jsonDecode(responseBody);
+
+        if (response != null) {
+          setState(() {
+            rln = data[0]["RL_NO"];
+          });
+        } else {
+          print('Error: ${response.reasonPhrase}');
+          // Handle the error or take appropriate action as needed
+        }
+      } else {
+        print('Token or User ID missing');
+        // Handle the case when the token or user ID is missing
+      }
+    }
+  }
 
   void toggleButtonState(int index) {
     setState(() {
@@ -277,22 +404,6 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   height: 20,
                 ),
-                // ElevatedButton(
-                //   onPressed: () {
-                //     // Add your logic to handle the 'Done' button click here.
-                //     // You can use the 'buttonStates' list to determine which buttons were selected.
-                //     Navigator.pushNamed(context, 'game');
-                //     print('Game Screen ');
-                //   },
-                //   child: Text(
-                //     'Play Game :',
-                //     style: TextStyle(fontSize: 30),
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 20,
-                // ),
-
                 Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -333,7 +444,7 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                       Text(
-                                        "10.00",
+                                        "$wbAccountBalance",
                                         style: TextStyle(
                                             color: Color.fromARGB(255, 230, 190, 16),
                                             fontSize: 20,
@@ -357,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                             shape: RoundedRectangleBorder(side: BorderSide(width: 2)),
                             child: TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, 'topup');
+                                Navigator.pushNamed(context, 'deposit');
                                 print('Recharge Screen');
                               },
                               child: Text(
@@ -406,7 +517,7 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                       Text(
-                                        "5.00",
+                                        "$wbEarnedTotal",
                                         style: TextStyle(
                                             color: Color.fromARGB(255, 230, 190, 16),
                                             fontSize: 20,
@@ -489,7 +600,7 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                       Text(
-                                        "5.00",
+                                        "$wbActiveDeposit",
                                         style: TextStyle(
                                             color: Color.fromARGB(255, 230, 190, 16),
                                             fontSize: 20,
@@ -515,25 +626,7 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text('Last Deposit:'),
-                                    Text('\₹50.00'),
-                                  ],
-                                ),
-                              ),
-                              Card(
-                                color: Color.fromARGB(255, 230, 190, 16),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Total Deposit:',
-                                    ),
-                                    Text(
-                                      '\₹50.00',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                    Text('$wbLastDeposit'),
                                   ],
                                 ),
                               ),
@@ -579,7 +672,7 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                       Text(
-                                        "5.00",
+                                        "$wbTotalWithdrawal",
                                         style: TextStyle(
                                             color: Color.fromARGB(255, 230, 190, 16),
                                             fontSize: 20,
@@ -605,25 +698,7 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text('Last Withdrawal:'),
-                                    Text('\₹5.00'),
-                                  ],
-                                ),
-                              ),
-                              Card(
-                                color: Color.fromARGB(255, 230, 190, 16),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Pending Withdrawal:', style: TextStyle(fontSize: 10),
-                                    ),
-                                    Text(
-                                      '\₹00.00',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                    Text('$wbLastWithdrawal'),
                                   ],
                                 ),
                               ),
@@ -642,7 +717,7 @@ class _HomePageState extends State<HomePage> {
                    child: Column(
                      mainAxisAlignment: MainAxisAlignment.center,
                      children: [
-                       Text('Round 1', style: TextStyle(fontSize: 27),),
+                       Text("$rln", style: TextStyle(fontSize: 27),),
                        SizedBox(height: 4.0), // Add spacing between the GridView and selected numbers container
                        Container(
                          height: 60,
@@ -774,7 +849,7 @@ class _HomePageState extends State<HomePage> {
                   itemIndex: 1,
                   onTap: () {
                     changeSelected(1);
-                    Navigator.pushNamed(context, 'topup');
+                    Navigator.pushNamed(context, 'deposit');
                     print('Recharge Screen');
                   },
                 ),

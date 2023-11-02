@@ -13,6 +13,7 @@ import 'package:betting_app/withdrawal_screen.dart';
 import 'package:betting_app/withdrawal_history.dart';
 import 'package:betting_app/bank_details.dart';
 import 'package:betting_app/referral_screen.dart';
+import 'DepositScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ void main() async {
       'bankdetails': (context) => BankDetails(),
       'referral': (context) => ReferralScreen(),
       'gamehistory': (context) => GameHistory(),
+      'deposit': (context) => DepositScreen(),
     },
   )
   );
