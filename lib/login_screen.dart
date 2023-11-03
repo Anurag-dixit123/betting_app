@@ -786,8 +786,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void login(BuildContext context) async {
-    if (passwordController.text.isNotEmpty &&
-        mobileNumberController.text.isNotEmpty) {
+    if (passwordController.text.isNotEmpty && mobileNumberController.text.isNotEmpty) {
       print('Sending login request...');
 
       var response = await http.post(
@@ -806,20 +805,38 @@ class _AuthScreenState extends State<AuthScreen> {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
+        // Extract and store the 'ci_session' cookie
+        var cookies = response.headers['set-cookie'];
+        if (cookies != null) {
+          var cookieList = cookies.split('; ');
+          for (var cookie in cookieList) {
+            if (cookie.startsWith('ci_session=')) {
+              String ciSession = cookie.split('=')[1];
+              print('ci_session: $ciSession');
+              // Save the 'ci_session' cookie to SharedPreferences
+              saveCiSession(ciSession);
+            }
+          }
+        }
+
         final body = jsonDecode(response.body);
         saveToken(body['token']);
         saveUserId(body['id']);
         saveMobileNumber(mobileNumberController.text);
         pageRoute(context, body['token']);
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Invalid Credentials')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid Credentials')));
       }
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Blank Value')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Blank Value')));
     }
   }
+
+  void saveCiSession(String ciSession) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('ci_session', ciSession);
+  }
+
 
   void pageRoute(BuildContext context, String token) async {
     SharedPreferences pref = await SharedPreferences.getInstance();

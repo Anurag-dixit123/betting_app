@@ -26,19 +26,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   List<bool> buttonStates = List.generate(12, (index) => false);
+  List<int> selectedNumbers = [];
 
   String? username = '';
   String? registrationDate = '';
   String? lastAccess = '';
-  String? wbId = '';
-  String? wbTT = '';
+  String? wbId = '0';
+  String? wbTT = '0';
   String? wbLoginId = '';
-  String? wbAccountBalance = '';
-  String? wbEarnedTotal = '';
-  String? wbActiveDeposit = '';
-  String? wbTotalWithdrawal = '';
-  String? wbLastDeposit = '';
-  String? wbLastWithdrawal = '';
+  String? wbAccountBalance = '0';
+  String? wbEarnedTotal = '0';
+  String? wbActiveDeposit = '0';
+  String? wbTotalWithdrawal = '0';
+  String? wbLastDeposit = '0';
+  String? wbLastWithdrawal = '0';
   String rln = ''; // Initialize with an empty string
 
 
@@ -51,13 +52,20 @@ class _HomePageState extends State<HomePage> {
     WalletBalanceApi(context);
     // Call the third API function
     GetRoundApi(context);
+
   }
 
+
+  void saveRLId(String rlId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('rl_id', rlId);
+    // print('Saved RL_ID: $rlId'); // Print the RL_ID value
+  }
 
   // 1st API Validation
   void BankDetailsUpdateApi(BuildContext context) async {
 
-      print('Sending Data To Api...');
+      print('Sending Data To 1st BankDetails Api...');
       // Move the code to retrieve token and user ID here
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? userId = prefs.getString('userId');
@@ -78,9 +86,9 @@ class _HomePageState extends State<HomePage> {
           },
         );
 
-        print('API Request 1 - Response status code: ${response.statusCode}'); // Added print statement
-        print('Response status code of 1st Api: ${response.statusCode}');
-        // print('Response body: ${response.body}'); // Print the response status code and body
+        // print('API Request 1 - Response status code: ${response.statusCode}'); // Added print statement
+        print('Response status code of 1st BankDetailsApi: ${response.statusCode}');
+        print('Response body data of 1st Api: ${response.body}'); // Print the response status code and body
 
         if (response.statusCode == 200) {
           final body = jsonDecode(response.body);
@@ -108,14 +116,14 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
+// 2nd Api Integration
   void WalletBalanceApi(BuildContext context) async {
-    print('Sending Data To Wallet API...');
+    print('Sending Data To 2nd Wallet API...');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('userId');
     String? token = prefs.getString('login');
-
-    print('Token for Wallet API: $token');
+    String? ciSession = prefs.getString('ci_session'); // Retrieve the ci_session cookie from SharedPreferences
 
     if (token != null && userId != null) {
       var headers = {
@@ -124,7 +132,7 @@ class _HomePageState extends State<HomePage> {
         'Authorization': token,
         'type': '2',
         'User-ID': userId,
-        'Cookie': 'ci_session=6b84f6a419a5b7f945dd03e33c301c4d6357e89d'
+        if (ciSession != null) 'Cookie': 'ci_session=$ciSession', // Include ci_session cookie if available
       };
 
       var request = http.MultipartRequest('POST', Uri.parse('https://cripx.provisioningtech.com/get_ajax/wallet_balance'));
@@ -135,23 +143,23 @@ class _HomePageState extends State<HomePage> {
 
       http.StreamedResponse response = await request.send();
 
-      print('Wallet API Request - Response status code: ${response.statusCode}');
-
-
+      print('Response status code of 2nd WalletBalanceApi: ${response.statusCode}');
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
-        print('Response body: $responseBody');
-        // Process the response as needed
         final data = jsonDecode(responseBody);
-        wbId = data['WB_ID'];
-        wbTT = data['WB_TT'];
-        wbLoginId = data['WB_LOGIN_ID'];
-        wbAccountBalance = data['WB_ACCOUNT_BALANCE'];
-        wbEarnedTotal = data['WB_EARNED_TOTAL'];
-        wbActiveDeposit = data['WB_ACTIVE_DEPOSIT'];
-        wbTotalWithdrawal = data['WB_TOTAL_WITH_DRAWL'];
-        wbLastDeposit = data['WB_LAST_DEPOSIT'];
-        wbLastWithdrawal = data['WB_LAST_WITHDRAWL'];
+        print('Response body data of 2nd Api: ${responseBody}'); // Print the entire response body
+
+
+        //
+        // wbId = data['WB_ID'];
+        // wbTT = data['WB_TT'];
+        // wbLoginId = data['WB_LOGIN_ID'];
+        // wbAccountBalance = data['WB_ACCOUNT_BALANCE'];
+        // wbEarnedTotal = data['WB_EARNED_TOTAL'];
+        // wbActiveDeposit = data['WB_ACTIVE_DEPOSIT'];
+        // wbTotalWithdrawal = data['WB_TOTAL_WITH_DRAWL'];
+        // wbLastDeposit = data['WB_LAST_DEPOSIT'];
+        // wbLastWithdrawal = data['WB_LAST_WITHDRAWL'];
 
         setState(() {
           // Update the state to trigger a UI refresh with the new data.
@@ -161,20 +169,28 @@ class _HomePageState extends State<HomePage> {
         // Handle the error or take appropriate action as needed
       }
     } else {
-      print('Token or User ID missing');
-      // Handle the case when the token or user ID is missing
+      print('Token, User ID, or ci_session missing');
+      // Handle the case when the token, user ID, or ci_session is missing
+
+
+      setState(() {
+        // Update the state to trigger a UI refresh with the new values (all set to 0).
+      });
     }
   }
 
 
+
+// 3rd Api Integration
   void GetRoundApi(BuildContext context) async {
-    print('Sending Data To Wallet API...');
+    print('Sending Data To 3rd GetRound API...');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('userId');
     String? token = prefs.getString('login');
-
-    print('Token for Wallet API: $token');
+    String? ciSession = prefs.getString('ci_session'); // Retrieve the ci_session cookie from SharedPreferences
+    //
+    // print('Token for Wallet API: $token');
 
     if (token != null && userId != null) {
       var headers = {
@@ -183,7 +199,7 @@ class _HomePageState extends State<HomePage> {
         'Authorization': token,
         'type': '2',
         'User-ID': userId,
-        'Cookie': 'ci_session=6b84f6a419a5b7f945dd03e33c301c4d6357e89d'
+        if (ciSession != null) 'Cookie': 'ci_session=$ciSession', // Include ci_session cookie if available
       };
 
       var request = http.MultipartRequest('POST', Uri.parse(
@@ -195,35 +211,105 @@ class _HomePageState extends State<HomePage> {
 
       http.StreamedResponse response = await request.send();
 
-      print('Get Round List API Request - Response status code: ${response
-          .statusCode}');
-
+      print('Response status code of 3rd GetRoundApi: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
-        print('Response body: $responseBody');
+        print('Response body data of 3rd Api: $responseBody');
         // Process the response as needed
         final data = jsonDecode(responseBody);
 
-        if (response != null) {
+        if (data.isNotEmpty) {
+          String rlId = data[0]["RL_ID"];
+          // Save RL_ID to SharedPreferences
+          saveRLId(rlId);
+
           setState(() {
             rln = data[0]["RL_NO"];
           });
         } else {
-          print('Error: ${response.reasonPhrase}');
+          print('Error: Empty response');
           // Handle the error or take appropriate action as needed
         }
       } else {
-        print('Token or User ID missing');
-        // Handle the case when the token or user ID is missing
+        print('Token, User ID, or ci_session missing');
+        // Handle the case when the token, user ID, or ci_session is missing
       }
     }
   }
 
+  void PlayGameAPi(BuildContext context) async {
+    print('Sending Data To PlayGame API...');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    String? token = prefs.getString('login');
+    String? ciSession = prefs.getString('ci_session');
+    String? rlId = prefs.getString('rl_id');
+
+    // Retrieve the selected numbers from shared preferences
+    List<int> selectedNumbers = prefs.getStringList('selected_numbers')?.map((s) => int.parse(s))?.toList() ?? [];
+    if (token != null && userId != null && rlId != null) {
+      var headers = {
+        'Client-Service': 'frontend-client',
+        'Auth-Key': 'simplerestapi',
+        'Authorization': token,
+        'type': '2',
+        'User-ID': userId,
+        if (ciSession != null) 'Cookie': 'ci_session=$ciSession',
+      };
+
+      var request = http.MultipartRequest('POST', Uri.parse(
+          'https://cripx.provisioningtech.com/post_ajax/play_round'));
+      request.fields.addAll({
+        'loginid': userId,
+        'round_no': rlId,
+        // Use the selected numbers as the 'round_value'
+        'round_value': selectedNumbers.join(', '), // Convert the list to a comma-separated string
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      print('Response status code of 4th PlayGameApi: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        print('Response body: $responseBody');
+
+        final data = jsonDecode(responseBody);
+        if (data != null && data is List && data.isNotEmpty) {
+          setState(() {
+            rln = data[0]["RL_NO"];
+          });
+        }
+      } else {
+        print('Token, User ID, ci_session, or RL_ID missing');
+        // Handle the case when the token, user ID, ci_session, or RL_ID is missing
+      }
+    }
+  }
+
+
+
   void toggleButtonState(int index) {
     setState(() {
       buttonStates[index] = !buttonStates[index];
+      if (buttonStates[index]) {
+        // Add the selected number to the list
+        selectedNumbers.add(index + 1);
+      } else {
+        // Remove the unselected number from the list
+        selectedNumbers.remove(index + 1);
+      }
     });
+
+    // Save the selected numbers list to shared preferences
+    saveSelectedNumbers(selectedNumbers);
+  }
+  void saveSelectedNumbers(List<int> numbers) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('selected_numbers', numbers.map((e) => e.toString()).toList());
   }
 
   void changeSelected(int index) {
@@ -712,6 +798,7 @@ class _HomePageState extends State<HomePage> {
            SizedBox(
              height: 20,
            ),
+               //The Game UI Code
                Container(
                  child: Center(
                    child: Column(
@@ -800,9 +887,13 @@ class _HomePageState extends State<HomePage> {
                        ),
                        ElevatedButton(
                          onPressed: () {
-                           // Add your logic to handle the 'Done' button click here.
-                           // You can use the 'buttonStates' list to determine which buttons were selected.
+
                            print('Done');
+                           // Save the selected numbers to shared preferences
+                           saveSelectedNumbers(selectedNumbers);
+                           print(selectedNumbers);
+                           // Call the fourth API function
+                           PlayGameAPi(context);
                          },
                          child: Text('Done', style: TextStyle(fontSize: 20),),
                        ),
