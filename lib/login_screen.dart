@@ -767,15 +767,31 @@ class _AuthScreenState extends State<AuthScreen> {
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, 'phone');
-                    },
-                    child: Text(
-                      'Account Signup',
-                      style: TextStyle(fontSize: 20),
-                    ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //Account Signup Button
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'phone');
+                        },
+                        child: Text(
+                          'Account Signup',
+                          style: TextStyle(fontSize: 15, color: Colors.black),
+                        ),
+                      ),
+                      //Forgot Password Button
+                      TextButton(onPressed:(){
+                        Navigator.pushNamed(context, 'forgotPassword');
+                      }, child : Text(
+                        'forgot password ?',
+                        style: TextStyle(fontSize: 15, color: Colors.black),
+                      ),),
+
+                    ],
                   ),
+
                 ],
               ),
             ),

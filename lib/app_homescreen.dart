@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   List<bool> buttonStates = List.generate(12, (index) => false);
   List<int> selectedNumbers = [];
+  bool isButtonEnabled = true;
 
   String? username = '';
   String? registrationDate = '';
@@ -53,6 +54,9 @@ class _HomePageState extends State<HomePage> {
     // Call the third API function
     GetRoundApi(context);
 
+    //Call the 5th api
+    GetRoundResultAPi(context);
+
   }
 
 
@@ -60,6 +64,12 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('rl_id', rlId);
     // print('Saved RL_ID: $rlId'); // Print the RL_ID value
+  }
+
+  void saveRLtt(String rltt) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('rl_tt', rltt);
+    print('Saved RL_TT: $rltt'); // Print the RL_ID value
   }
 
   // 1st API Validation
@@ -86,7 +96,6 @@ class _HomePageState extends State<HomePage> {
           },
         );
 
-        // print('API Request 1 - Response status code: ${response.statusCode}'); // Added print statement
         print('Response status code of 1st BankDetailsApi: ${response.statusCode}');
         print('Response body data of 1st Api: ${response.body}'); // Print the response status code and body
 
@@ -96,6 +105,7 @@ class _HomePageState extends State<HomePage> {
            username = detail['BRANCH_USERNAME'];
            registrationDate = detail['BRANCH_TT'].substring(0, 10); // Extract the date part
            lastAccess = detail['BRANCH_TT'].substring(11); // Extract the time part
+
           // Now you can print or use these variables as needed
           // print('Username: $username');
           // print('Registration Date: $registrationDate');
@@ -149,21 +159,35 @@ class _HomePageState extends State<HomePage> {
         final data = jsonDecode(responseBody);
         print('Response body data of 2nd Api: ${responseBody}'); // Print the entire response body
 
-
-        //
-        // wbId = data['WB_ID'];
-        // wbTT = data['WB_TT'];
-        // wbLoginId = data['WB_LOGIN_ID'];
-        // wbAccountBalance = data['WB_ACCOUNT_BALANCE'];
-        // wbEarnedTotal = data['WB_EARNED_TOTAL'];
-        // wbActiveDeposit = data['WB_ACTIVE_DEPOSIT'];
-        // wbTotalWithdrawal = data['WB_TOTAL_WITH_DRAWL'];
-        // wbLastDeposit = data['WB_LAST_DEPOSIT'];
-        // wbLastWithdrawal = data['WB_LAST_WITHDRAWL'];
-
-        setState(() {
-          // Update the state to trigger a UI refresh with the new data.
-        });
+        if (data != null) {
+          // Update only the 'wb' variables from the API response.
+          setState(() {
+            wbId = data['WB_ID']?.toString() ?? '0';
+            wbTT = data['WB_TT']?.toString() ?? '0';
+            wbLoginId = data['WB_LOGIN_ID']?.toString() ?? '0';
+            wbAccountBalance = data['WB_ACCOUNT_BALANCE']?.toString() ?? '0';
+            wbEarnedTotal = data['WB_EARNED_TOTAL']?.toString() ?? '0';
+            wbActiveDeposit = data['WB_ACTIVE_DEPOSIT']?.toString() ?? '0';
+            wbTotalWithdrawal = data['WB_TOTAL_WITH_DRAWL']?.toString() ?? '0';
+            wbLastDeposit = data['WB_LAST_DEPOSIT']?.toString() ?? '0';
+            wbLastWithdrawal = data['WB_LAST_WITHDRAWL']?.toString() ?? '0';
+          });
+        } else {
+          // Handle the case where the response does not contain the expected data.
+          print('API response does not contain expected data');
+          // Set 'wb' variables to '0' when the response is null or doesn't contain the expected data.
+          setState(() {
+            wbId = '0';
+            wbTT = '0';
+            wbLoginId = '0';
+            wbAccountBalance = '0';
+            wbEarnedTotal = '0';
+            wbActiveDeposit = '0';
+            wbTotalWithdrawal = '0';
+            wbLastDeposit = '0';
+            wbLastWithdrawal = '0';
+          });
+        }
       } else {
         print('Error: ${response.reasonPhrase}');
         // Handle the error or take appropriate action as needed
@@ -172,13 +196,20 @@ class _HomePageState extends State<HomePage> {
       print('Token, User ID, or ci_session missing');
       // Handle the case when the token, user ID, or ci_session is missing
 
-
+      // Set 'wb' variables to '0' when essential data is missing.
       setState(() {
-        // Update the state to trigger a UI refresh with the new values (all set to 0).
+        wbId = '0';
+        wbTT = '0';
+        wbLoginId = '0';
+        wbAccountBalance = '0';
+        wbEarnedTotal = '0';
+        wbActiveDeposit = '0';
+        wbTotalWithdrawal = '0';
+        wbLastDeposit = '0';
+        wbLastWithdrawal = '0';
       });
     }
   }
-
 
 
 // 3rd Api Integration
@@ -221,8 +252,11 @@ class _HomePageState extends State<HomePage> {
 
         if (data.isNotEmpty) {
           String rlId = data[0]["RL_ID"];
+          String rltt = data[0]["RL_TT"].substring(0, 10); // Extract the date part (first 10 characters)
           // Save RL_ID to SharedPreferences
           saveRLId(rlId);
+          saveRLtt(rltt);
+
 
           setState(() {
             rln = data[0]["RL_NO"];
@@ -238,6 +272,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+//4th Api Integration
   void PlayGameAPi(BuildContext context) async {
     print('Sending Data To PlayGame API...');
 
@@ -266,6 +301,7 @@ class _HomePageState extends State<HomePage> {
         'round_no': rlId,
         // Use the selected numbers as the 'round_value'
         'round_value': selectedNumbers.join(', '), // Convert the list to a comma-separated string
+        'amount': '1'
       });
       request.headers.addAll(headers);
 
@@ -291,21 +327,124 @@ class _HomePageState extends State<HomePage> {
   }
 
 
+  //5th Api Integration
+  void GetRoundResultAPi(BuildContext context) async {
+    print('Sending Data 5th GetRoundResult API...');
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    String? token = prefs.getString('login');
+    String? ciSession = prefs.getString('ci_session');
+    String? rlId = prefs.getString('rl_id');
+    String? rltt = prefs.getString('rl_tt');
+    print(rltt);
+
+
+    // Retrieve the selected numbers from shared preferences
+    List<int> selectedNumbers = prefs.getStringList('selected_numbers')?.map((s) => int.parse(s))?.toList() ?? [];
+    if (token != null && userId != null && rlId != null && rltt != null) {
+      var headers = {
+        'Client-Service': 'frontend-client',
+        'Auth-Key': 'simplerestapi',
+        'Authorization': token,
+        'type': '2',
+        'User-ID': userId,
+        if (ciSession != null) 'Cookie': 'ci_session=$ciSession',
+      };
+
+      var request = http.MultipartRequest('POST', Uri.parse(
+          'https://cripx.provisioningtech.com/get_ajax/get_round_result'));
+      request.fields.addAll({
+        'round_no': rlId,
+         'date': rltt,
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      print('Response status code of 5th PlayGameApi: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        String responseBody = await response.stream.bytesToString();
+        print('Response body: $responseBody');
+
+        // final data = jsonDecode(responseBody);
+        // if (data != null && data is List && data.isNotEmpty) {
+        //   setState(() {
+        //     rln = data[0]["RL_NO"];
+        //   });
+        // }
+      } else {
+        print('Token, User ID, ci_session, or RL_ID missing');
+        // Handle the case when the token, user ID, ci_session, or RL_ID is missing
+      }
+    }
+  }
+
+
+  void _onButtonPressed() async {
+    if (isButtonEnabled) {
+      print('Done');
+      // Save the selected numbers to shared preferences
+      saveSelectedNumbers(selectedNumbers);
+      print(selectedNumbers);
+      // Call the fourth API function
+      PlayGameAPi(context);
+      // Additional logic you want to perform.
+      // For example, show a message.
+      print('Button Pressed');
+
+      // Disable the button after use.
+      setState(() {
+        isButtonEnabled = false;
+      });
+    }
+  }
 
   void toggleButtonState(int index) {
-    setState(() {
-      buttonStates[index] = !buttonStates[index];
-      if (buttonStates[index]) {
-        // Add the selected number to the list
-        selectedNumbers.add(index + 1);
-      } else {
-        // Remove the unselected number from the list
-        selectedNumbers.remove(index + 1);
-      }
-    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        int amount = 0;
 
-    // Save the selected numbers list to shared preferences
-    saveSelectedNumbers(selectedNumbers);
+        return Container(
+          constraints: BoxConstraints(
+            maxWidth: 300, // Set your desired max width
+          ),
+          child: AlertDialog(
+            title: Text('Enter Amount for Number - ${index + 1}', style: TextStyle(fontSize: 18),),
+            content: Column(
+              mainAxisSize: MainAxisSize.min, // Ensure the dialog is not too large
+
+              children: [
+                TextField(
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    amount = int.tryParse(value) ?? 0;
+                  },
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Add the selected number with the entered amount to the list
+                    selectedNumbers.add(index + 1);
+                    // Additional logic with the amount if needed
+                    // Print the entered amount
+                    print('Entered Amount for Number ${index + 1}: $amount');
+
+                    // Call the fourth API function
+                    PlayGameAPi(context);
+                    // Close the dialog
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Submit'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
   void saveSelectedNumbers(List<int> numbers) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -886,15 +1025,7 @@ class _HomePageState extends State<HomePage> {
                          ),
                        ),
                        ElevatedButton(
-                         onPressed: () {
-
-                           print('Done');
-                           // Save the selected numbers to shared preferences
-                           saveSelectedNumbers(selectedNumbers);
-                           print(selectedNumbers);
-                           // Call the fourth API function
-                           PlayGameAPi(context);
-                         },
+                         onPressed: isButtonEnabled ? _onButtonPressed : null,
                          child: Text('Done', style: TextStyle(fontSize: 20),),
                        ),
                      ],

@@ -1,3 +1,4 @@
+
 import 'package:betting_app/gaming_history.dart';
 import 'package:betting_app/password_screen.dart';
 import 'package:betting_app/payment_history.dart';
@@ -13,7 +14,15 @@ import 'package:betting_app/withdrawal_screen.dart';
 import 'package:betting_app/withdrawal_history.dart';
 import 'package:betting_app/bank_details.dart';
 import 'package:betting_app/referral_screen.dart';
+import ' Forgot Password Screen/ForgotPassword_Screen.dart';
+import ' Forgot Password Screen/New_Password_Screen.dart';
+import ' Forgot Password Screen/Otp_Verification_Screen.dart';
 import 'DepositScreen.dart';
+
+
+
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +45,12 @@ void main() async {
       'referral': (context) => ReferralScreen(),
       'gamehistory': (context) => GameHistory(),
       'deposit': (context) => DepositScreen(),
+      'forgotPassword': (context) => ForgotPasswordScreen(),
+      'OtpVerification': (context) => OTPVerificationScreen(),
+      'NewPassword': (context) => NewPasswordScreen(),
+
+
+
     },
   )
   );
